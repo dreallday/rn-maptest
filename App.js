@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import {
   Platform,
   StyleSheet,
+  TouchableOpacity,
   Text,
   View
 } from 'react-native';
@@ -31,7 +32,7 @@ export default class App extends Component<Props> {
     super(props);
     this.map = null;
     this.state = {
-      limit: 10,
+      limit: 100,
       data: [],
       count: 0
     }
@@ -84,6 +85,8 @@ export default class App extends Component<Props> {
       markers.push(
         <Marker
           key={marker.id}
+          title={marker.title}
+          description={marker.description}
           coordinate={{
             latitude: marker.latitude,
             longitude: marker.longitude
@@ -94,22 +97,20 @@ export default class App extends Component<Props> {
     return markers
   }
 
-
-  // componentDidMount = () => {
-  //   let fit = [];
-  //   this.state.data.map(marker => {
-  //     fit.push({
-  //       latitude: marker.latitude,
-  //       longitude: marker.longitude
-  //     });
-  //   });
-  //   this.map.fitToCoordinates(fit);
-  // }
+  fitToMap = () => {
+    let fit = [];
+    this.state.data.map(marker => {
+      fit.push({
+        latitude: marker.latitude,
+        longitude: marker.longitude
+      });
+    });
+    this.map.fitToCoordinates(fit);
+  }
 
   render() {
     return (
       <View style={[styles.container, StyleSheet.absoluteFillObject]}>
-        <View style={{ left: 25, right: 25, top: 10, borderColor: "red", borderWidth: 1, position: "absolute"}}><Text>Reload</Text></View>
         <MapView
           ref={map => { this.map = map }}
           style={[StyleSheet.absoluteFill]}
@@ -119,9 +120,19 @@ export default class App extends Component<Props> {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
+          // onMapReady={() => { console.log("map ready")}}
+          // onLayout={() => { console.log("on layout ready")}}
+          
         >
         {this.renderData()}
         </MapView>
+        <TouchableOpacity
+          onPress={this.fitToMap}
+          style={{ top: 25, left: 100, right: 100, borderRadius: 50, position: "absolute", width: "50%", height: 25, alignContent: "center", justifyContent: "center"}}>
+          <View style={{justifyContent: "center", alignSelf: "center", alignContent: "center"}}>
+            <Text>Center on Items</Text>
+          </View>
+        </TouchableOpacity>
       </View>
     );
   }
