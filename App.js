@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 import firebase from "react-native-firebase";
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -75,9 +75,41 @@ export default class App extends Component<Props> {
         });
   }
 
+  renderData = () => {
+    const { data, count } = this.state;
+
+    if(!count || count <= 0) return <View/>
+    let markers = [];
+    data.map(marker => {
+      markers.push(
+        <Marker
+          key={marker.id}
+          coordinate={{
+            latitude: marker.latitude,
+            longitude: marker.longitude
+          }}
+        />
+      )
+    });
+    return markers
+  }
+
+
+  // componentDidMount = () => {
+  //   let fit = [];
+  //   this.state.data.map(marker => {
+  //     fit.push({
+  //       latitude: marker.latitude,
+  //       longitude: marker.longitude
+  //     });
+  //   });
+  //   this.map.fitToCoordinates(fit);
+  // }
+
   render() {
     return (
       <View style={[styles.container, StyleSheet.absoluteFillObject]}>
+        <View style={{ left: 25, right: 25, top: 10, borderColor: "red", borderWidth: 1, position: "absolute"}}><Text>Reload</Text></View>
         <MapView
           ref={map => { this.map = map }}
           style={[StyleSheet.absoluteFill]}
@@ -87,7 +119,9 @@ export default class App extends Component<Props> {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
-          />
+        >
+        {this.renderData()}
+        </MapView>
       </View>
     );
   }
