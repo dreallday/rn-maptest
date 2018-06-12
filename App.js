@@ -22,9 +22,22 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
+const fetchURL = "https://serene-scrubland-62943.herokuapp.com/api/places";
+
 type Props = {};
 export default class App extends Component<Props> {
+
+  constructor(props) {
+    super(props);
+    this.map = null;
+    this.state = {
+      limit: 10,
+      data: [],
+      count: 0
+    }
+  }
   componentDidMount = () => {
+    // firebase begin test
     firebase.auth()
       .signInAnonymouslyAndRetrieveData()
       .then(credential => {
@@ -52,13 +65,21 @@ export default class App extends Component<Props> {
         }
       });
 
+      // firebase end test
 
+      fetch(`${fetchURL}?limit=${this.state.limit}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log("data", data);
+          this.setState(data);
+        });
   }
 
   render() {
     return (
       <View style={[styles.container, StyleSheet.absoluteFillObject]}>
         <MapView
+          ref={map => { this.map = map }}
           style={[StyleSheet.absoluteFill]}
           initialRegion={{
             latitude: 37.78825,
