@@ -1,4 +1,4 @@
-package com.consumer;
+package io.codemercenaries.test.consumer;
 
 import com.facebook.react.ReactActivity;
 
